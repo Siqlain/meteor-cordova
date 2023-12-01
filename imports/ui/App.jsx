@@ -64,14 +64,14 @@ export default function App() {
       setIsLoading(true);
       IDWise.initialize({
         clientKey:
-          "QmFzaWMgT0RBME5EaGxOall0WmpVeFpDMDBNVE5oTFdGa1pEWXRNRE01TWpGaE5UaGpZbU5pT21WNVNtaGlSMk5wVDJsS1NWVjZTVEZPYVVselNXNVNOV05EU1RaSmEzQllWa05LT1M1bGVVcHFaRmhPTUdJeU1XeGpiRGx3V2tOSk5rbHFaM2RPUkZFMFdsUlpNa3hYV1RGTlYxRjBUa1JGZWxsVE1XaGFSMUV5VEZSQmVrOVVTWGhaVkZVMFdUSkthbGxwU1hOSmJWWTBZME5KTmsxVVkzZE5ha0V4VGxSUmVrNXVNQzVNUkRKclprTjFVRE5UZFZCNExVNUplREU0VEhSQmNrMTZVSEZ6VXpCS09FZEpWMUZDTmtGak0zbEI=", //replace xxxx with client key that you got from IDWise
-        locale: "en ",
+          "add your client key", //replace xxxx with client key that you got from IDWise
+        locale: "en",
       })
         .then(idwise => {
           setIsLoading(false);
           idwise.startJourney({
             mount: "#idwise-mount",
-            journeyDefinitionId: "80448e66-f51d-413a-add6-03921a58cbcb", // replace xxx with your jounrey definition id
+            journeyDefinitionId: "add journey def id", // replace xxx with your jounrey definition id
             referenceNo: "test", // is optional, pass your reference id if it is needed.
             eventHandlers: {
               onJourneyStarted: function (details) {
