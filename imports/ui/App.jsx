@@ -12,6 +12,7 @@ export default function App() {
   }, []);
   function onDeviceReady() {
     console.log("Device is ready");
+    console.log(window?.cordova?.platformId);
     checkCameraPermissionState();
   }
   function handleError(error) {
@@ -22,8 +23,9 @@ export default function App() {
       cordova.plugins.diagnostic.getCameraAuthorizationStatus(function (
         status
       ) {
+        console.log("Camera permission is: " + status);
         setPermissionStatus(status);
-        if (status === "GRANTED") {
+        if (status === "GRANTED" || status == "authorized") {
           console.log("Permission granted loading IDWise");
           loadIDWise();
         }
@@ -36,47 +38,40 @@ export default function App() {
     if (Meteor.isCordova) {
       cordova.plugins.diagnostic.requestCameraAuthorization({
         successCallback: function (status) {
-          switch (status) {
-            case "NOT_REQUESTED":
-              console.log("Permission not requested");
-              break;
-            case "DENIED_ALWAYS":
-              console.log("Permission denied");
-              break;
-            case "GRANTED":
-            case "LIMITED": // iOS 14+
-              console.log("Permission granted", status);
-              loadIDWise();
-              setPermissionStatus("GRANTED");
-              break;
+          console.log(`${status}`);
+          console.log("Successfully requested camera authorization: " + status);
+          setPermissionStatus(status);
+          if (status === "GRANTED" || status === "authorized") {
+            console.log("Permission granted loading IDWise");
+            loadIDWise();
+            return;
+          } else {
+            console.log("Permission not granted", status);
           }
-          console.log(
-            "Successfully requested camera authorization: authorization was " +
-              status
-          );
         },
         errorCallback: handleError,
         externalStorage: true,
       });
+    } else {
+      console.log("Loading IDWise web");
+      loadIDWise();
     }
   }
 
   function loadIDWise() {
-    if (permissionStatus !== "GRANTED") {
-      alert("Please allow camera permissions first");
-      return;
-    }
+    console.log("Loading IDWise", permissionStatus);
     try {
       setIsLoading(true);
       IDWise.initialize({
         clientKey:
-          "Please add you client key", //replace xxxx with client key that you got from IDWise
+          "QmFzaWMgT0RBME5EaGxOall0WmpVeFpDMDBNVE5oTFdGa1pEWXRNRE01TWpGaE5UaGpZbU5pT21WNVNtaGlSMk5wVDJsS1NWVjZTVEZPYVVselNXNVNOV05EU1RaSmEzQllWa05LT1M1bGVVcHFaRmhPTUdJeU1XeGpiRGx3V2tOSk5rbHFaM2RPUkZFMFdsUlpNa3hYV1RGTlYxRjBUa1JGZWxsVE1XaGFSMUV5VEZSQmVrOVVTWGhaVkZVMFdUSkthbGxwU1hOSmJWWTBZME5KTmsxVVkzZE5ha0V4VGxSUmVrNXVNQzVNUkRKclprTjFVRE5UZFZCNExVNUplREU0VEhSQmNrMTZVSEZ6VXpCS09FZEpWMUZDTmtGak0zbEI=", //replace xxxx with client key that you got from IDWise
         locale: "en ",
       })
         .then(idwise => {
+          setIsLoading(false);
           idwise.startJourney({
             mount: "#idwise-mount",
-            journeyDefinitionId: "please add the journey def id here", // replace xxx with your jounrey definition id
+            journeyDefinitionId: "80448e66-f51d-413a-add6-03921a58cbcb", // replace xxx with your jounrey definition id
             referenceNo: "test", // is optional, pass your reference id if it is needed.
             eventHandlers: {
               onJourneyStarted: function (details) {
@@ -114,7 +109,7 @@ export default function App() {
             style={{ height: "30px" }}
             disabled={isLoading}
           >
-            Load IDWise 
+            Load IDWise
           </button>
         </div>
       ) : null}

@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-undef
 // App.setPreference('android-targetSdkVersion', '34');
 // App.setPreference('android-compileSdkVersion', '34');
-// App.setPreference('android-minSdkVersion', '34');
+// This controls the live video behaviour on IOS
+App.setPreference('AllowInlineMediaPlayback', true);
 App.appendToConfig(`
     <platform name="android">
         <config-file parent="/*" target="AndroidManifest.xml">
